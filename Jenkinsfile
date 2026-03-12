@@ -1,5 +1,5 @@
 pipeline {
-    agent any
+    agent any // or use a labeled agent if you configure one
 
     environment {
         QUAY = credentials('QUAY_USER')
@@ -15,10 +15,11 @@ pipeline {
 
     stage("Add Jib Extension") {
             steps {
+		dir('home-automation-service'){		
                 sh './mvnw quarkus:add-extension -Dextensions="container-image-jib"'
             }
         }
-
+    }
         stage("Build & Push Image") {
             steps {
                 dir('home-automation-service'){
