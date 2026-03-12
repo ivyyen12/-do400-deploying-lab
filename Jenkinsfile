@@ -1,7 +1,5 @@
 pipeline {
-    agent {
-        node { label "maven" }
-    }
+    agent any
 
     environment {
         QUAY = credentials('QUAY_USER')
@@ -10,7 +8,8 @@ pipeline {
     stages {
         stage("Test") {
             steps {
-                sh "./mvnw verify"
+               dir('home-automation-service') 
+               sh "./mvnw verify"
             }
         }
 
@@ -22,6 +21,7 @@ pipeline {
 
         stage("Build & Push Image") {
             steps {
+                dir('home-automation-service'){
                 sh '''
                     ./mvnw package -DskipTests \
                         -Dquarkus.jib.base-jvm-image=quay.io/redhattraining/do400-java-alpine-openjdk11-jre:latest \
@@ -37,8 +37,8 @@ pipeline {
                 '''
             }
         }
-    }
+     }
+  }
 }
-
 
 
